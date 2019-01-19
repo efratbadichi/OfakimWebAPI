@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="OfakimDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="tblUser">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Decimal" Precision="18" Scale="0" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="BirthDate" Type="DateTime" Precision="0" />
+    <Property Name="Phone" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="FullName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Gender" Type="Boolean" />
+    <NavigationProperty Name="tblGender" Relationship="OfakimDBModel.FK_tblUsers_tblGender" FromRole="tblUser" ToRole="tblGender" />
+  </EntityType>
+  <EntityContainer Name="ofakimAppDBEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="tblUsers" EntityType="Self.tblUser" />
+    <FunctionImport Name="spAddUser" ReturnType="Collection(OfakimDBModel.spAddUser_Result)" />
+    <EntitySet Name="tblGenders" EntityType="OfakimDBModel.tblGender" />
+    <AssociationSet Name="FK_tblUsers_tblGender" Association="OfakimDBModel.FK_tblUsers_tblGender">
+      <End Role="tblGender" EntitySet="tblGenders" />
+      <End Role="tblUser" EntitySet="tblUsers" />
+    </AssociationSet>
+  </EntityContainer>
+  <ComplexType Name="spAddUser_Result">
+    <Property Type="Decimal" Name="Id" Nullable="false" Precision="18" Scale="0" />
+    <Property Type="String" Name="Email" Nullable="true" MaxLength="100" />
+    <Property Type="DateTime" Name="BirthDate" Nullable="true" />
+    <Property Type="String" Name="Phone" Nullable="true" MaxLength="10" />
+    <Property Type="String" Name="FullName" Nullable="true" MaxLength="50" />
+    <Property Type="Boolean" Name="Gender" Nullable="true" />
+  </ComplexType>
+  <EntityType Name="tblGender">
+    <Key>
+      <PropertyRef Name="typeCode" />
+    </Key>
+    <Property Name="typeCode" Type="Decimal" Nullable="false" Precision="18" Scale="0" />
+    <Property Name="typeName" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <NavigationProperty Name="tblUser" Relationship="OfakimDBModel.FK_tblUsers_tblGender" FromRole="tblGender" ToRole="tblUser" />
+  </EntityType>
+  <Association Name="FK_tblUsers_tblGender">
+    <End Type="OfakimDBModel.tblGender" Role="tblGender" Multiplicity="1" />
+    <End Type="OfakimDBModel.tblUser" Role="tblUser" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="tblGender">
+        <PropertyRef Name="typeCode" />
+      </Principal>
+      <Dependent Role="tblUser">
+        <PropertyRef Name="Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>
